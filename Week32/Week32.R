@@ -78,7 +78,7 @@ ggplot() +
     geom_text(aes(x=670, y=560, label = top2), size = 2, family = "Oswald") + 
     geom_text(aes(x=510, y=460, label = top3), size = 2, family = "Oswald") +
     ggrepel::geom_text_repel(currenttop3, mapping = aes(x = diameter - 10, y = rad+150, label= lab), size = 1.5, family = "Oswald")+
-    scale_x_continuous("Radius (ft)", limits=c(0, 800), expand=c(.05,.05)) +
+    scale_x_continuous("Diameter (ft)", limits=c(0, 800), expand=c(.05,.05)) +
     labs(y = "Height (ft)") + 
     theme_minimal() + 
     theme(text=element_text(family="Roboto"),
