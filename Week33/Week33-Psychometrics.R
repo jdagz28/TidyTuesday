@@ -1,24 +1,15 @@
+#16-08-2022
+#TidyTuesday - Week33 Open Source Psychometrics
+
 setwd("~/Jdagz Documents/TidyTuesday/Week 33")
 
 # Get the Data
-
-# Read in with tidytuesdayR package 
-# Install from CRAN via: install.packages("tidytuesdayR")
-# This loads the readme and all the datasets for the week of interest
-
-# Either ISO-8601 date or year/week works!
-
 tuesdata <- tidytuesdayR::tt_load('2022-08-16')
 #tuesdata <- tidytuesdayR::tt_load(2022, week = 33)
 
 characters <- tuesdata$characters
 psych_stats <- tuesdata$psych_stats
 myers_briggs <- tuesdata$myers_briggs
-
-# Or read in the data manually
-
-#characters <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-08-16/characters.csv')
-
 
 #Libraries
 library(tidyverse)
