@@ -182,14 +182,14 @@ p = ggplot(tomatoes_for_plot, aes(x = weight, y = variety)) +
   scale_fill_manual(values = "grey50") +
   labs(
     title = paste(
-      "Analyzing Lisa Lendway's tomato harvest (kg)",
+      "Analyzing Lisa Lendway's tomato harvest (kg).",
       "<b>Performance of the seven varieties of tomatoes in",
       "<b style='color:#F99B7D;'>2020</b> and",
       "<b style='color:#E76161;'>2021</b>.</b>"
     ),
     subtitle = paste(
       "A total of 19 tomato varieties were planted in two years.", 
-      "\nBut only seven of these varieties were planted in both years"
+      "\nBut only seven of these varieties were planted in both years."
     ),
     caption = paste(
       "Joshua Dagoy | Data: {gardenR} | #TidyTuesday 2024 - Week 22"
