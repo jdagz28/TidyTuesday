@@ -179,7 +179,7 @@ p = ggplot(tomatoes_for_plot, aes(x = weight, y = variety)) +
             aes(label = paste0(round(percent_diff, 1), "%"), x = mid_weight, y = variety, color = ifelse(percent_diff > 0, "#28A87D", "red")),
             hjust = 0.5, vjust = -0.7, size = 3, fontface = "bold") + 
   scale_color_manual(values = c("#28A87D", "#E76161")) +
-  scale_fill_manual(values = pal_base) +
+  scale_fill_manual(values = "grey50") +
   labs(
     title = paste(
       "Analyzing Lisa Lendway's tomato harvest (kg)",
@@ -189,7 +189,7 @@ p = ggplot(tomatoes_for_plot, aes(x = weight, y = variety)) +
     ),
     subtitle = paste(
       "A total of 19 tomato varieties were planted in two years.", 
-      "\nBut only seven of these varieites were planted in both years"
+      "\nBut only seven of these varieties were planted in both years"
     ),
     caption = paste(
       "Joshua Dagoy | Data: {gardenR} | #TidyTuesday 2024 - Week 22"
