@@ -188,7 +188,7 @@ p = ggplot(tomatoes_for_plot, aes(x = weight, y = variety)) +
       "<b style='color:#E76161;'>2021</b>.</b>"
     ),
     subtitle = paste(
-      "A total of 19 tomato varieties where planted in two years.", 
+      "A total of 19 tomato varieties were planted in two years.", 
       "\nBut only seven of these varieites were planted in both years"
     ),
     caption = paste(
