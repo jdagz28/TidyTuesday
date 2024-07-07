@@ -1,0 +1,1 @@
+<img src="./TidyTuesday_2022_Week24.png" alt="US Drought Conditions">
