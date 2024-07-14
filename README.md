@@ -9,6 +9,10 @@
 ### [Week 27 - TidyTuesday's Data Variables and Observations {ttmeta}](./2024/Week%27/)
 <img src="./2024/Week 27/Week27.png" alt="TidyTuesday's Data Variables and Observations">
 
+
+### [Week 28 - Top R Functions Used by David Robinson {funspotr}](./2024/Week%28/)
+<img src="./2024/Week 28/Week28.png" alt="David Robinson's favorite R functions">
+
 ---
 
 ## 2022
