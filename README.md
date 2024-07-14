@@ -3,14 +3,14 @@
 
 ## 2024
 
-### [Week 22 - Lisa's Vegetable Garden {gardenR}](./2024/Week%22/)
+### [Week 22 - Lisa's Vegetable Garden {gardenR}](./2024/Week%2022/)
 <img src="./2024/Week 22/Week22.png" alt="Lisa's Vegetable Garden">
 
-### [Week 27 - TidyTuesday's Data Variables and Observations {ttmeta}](./2024/Week%27/)
+### [Week 27 - TidyTuesday's Data Variables and Observations {ttmeta}](./2024/Week%2027/)
 <img src="./2024/Week 27/Week27.png" alt="TidyTuesday's Data Variables and Observations">
 
 
-### [Week 28 - Top R Functions Used by David Robinson {funspotr}](./2024/Week%28/)
+### [Week 28 - Top R Functions Used by David Robinson {funspotr}](./2024/Week%2028/)
 <img src="./2024/Week 28/Week28.png" alt="David Robinson's favorite R functions">
 
 ---
