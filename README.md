@@ -13,6 +13,9 @@
 ### [Week 28 - Top R Functions Used by David Robinson {funspotr}](./2024/Week%2028/)
 <img src="./2024/Week 28/Week28.png" alt="David Robinson's favorite R functions">
 
+### [Week 29 - English Women's Football](./2024/Week%2029/)
+<img src="./2024/Week 29/Week29.png" alt="English Women's Football top scorer club">
+
 ---
 
 ## 2022
