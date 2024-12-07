@@ -1,14 +1,8 @@
+# Load Libraries
 library(tidytuesdayR)
 library(tidyverse)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-library(skimr)
 library(ggtext)
-library(stringr)
-library(forcats)
-library(scales)
-library(prismatic)
+library(skimr)
 
 # Load Data
 tuesdata <- tidytuesdayR::tt_load(2024, week = 22)
@@ -20,27 +14,18 @@ planting_2021 <- tuesdata$planting_2021
 spending_2020 <- tuesdata$spending_2020
 spending_2021 <- tuesdata$spending_2021
 
-
 # Data Check
-colnames(harvest_2020)
 glimpse(harvest_2020)
 skim(harvest_2020)
 
-colnames(planting_2020)
 glimpse(planting_2020)
 skim(planting_2020)
 
-colnames(spending_2020)
 glimpse(spending_2020)
 skim(spending_2020)
 
 
-# Data Wrangling
-sum(is.na(harvest_2020))
-sum(is.na(harvest_2021))
-sum(is.na(harvest_2021$vegetable))
-sum(is.na(harvest_2021$weight))
-
+# Data Manipulation - Summarize Harvest Data by Year
 harvest2020 <- harvest_2020 %>%
   group_by(vegetable) %>%
   summarize(annual_harvest = sum(weight),
@@ -53,15 +38,15 @@ harvest2021 <- harvest_2021 %>%
             avg_month_harvest = sum(weight) / 12) %>%
   mutate(year = 2021)
 
+# Combined Harvest Data for Both Years
 combined_harvest <- bind_rows(harvest2020, harvest2021)
 
-
-
+# Reshape and Filter Data
 reshaped_harvest <- combined_harvest %>%
   select(vegetable, year, annual_harvest) %>%
   pivot_wider(names_from = year, values_from = annual_harvest, names_prefix = "year_") 
-  
-#vegetables not planted in both years
+
+# Exclude vegetables not planted in both years
 vegetables_with_na <- reshaped_harvest %>%
   filter(is.na(year_2020) | is.na(year_2021)) %>%
   select(vegetable)
@@ -75,7 +60,7 @@ bothyears_harvest <- bothyears_harest %>%
     percent_diff = (year_2021 - year_2020) / year_2020 * 100
   )
 
-
+# Plot Theme Setup
 theme_set(theme_minimal(base_family = "sans", base_size = 22))
 theme_update(
   axis.title = element_blank(),
@@ -99,22 +84,22 @@ theme_update(
   legend.position = "none"
 )
 
-
+# Prepare for plotting
 filtered_data <- bothyears_harvest %>%
   gather(key = "year", value = "weight", year_2020, year_2021) %>%
   mutate(year = ifelse(year == "year_2020", 2020, 2021)) %>%
   select(-percent_diff)
-  #%>%  filter(!(vegetable %in% c("tomatoes", "strawberries", "radish", "cilantro", "asparagus")))
+#%>%  filter(!(vegetable %in% c("tomatoes", "strawberries", "radish", "cilantro", "asparagus")))
 filtered_data$vegetable <- str_to_title(filtered_data$vegetable)
 
+# Plot annual harvest
+plt = ggplot(filtered_data, aes(x = weight, y = vegetable))
+plt <- plt + geom_line(aes(group = vegetable), linewidth = 1)
+plt <- plt + geom_point(data = filtered_data %>% filter(year == 2020), aes(color = "red"), size = 3)
+plt <- plt + geom_point(data = filtered_data %>% filter(year == 2021), aes(color = "blue"), size = 3)
+plt
 
-p = ggplot(filtered_data, aes(x = weight, y = vegetable))
-p <- p + geom_line(aes(group = vegetable), size = 1)
-p <- p + geom_point(data = filtered_data %>% filter(year == 2020), aes(color = "red"), size = 3)
-p <- p + geom_point(data = filtered_data %>% filter(year == 2021), aes(color = "blue"), size = 3)
-p
-
-
+# Focus analysis on harvest of tomato varieties
 tomatoes_2020 <- harvest_2020 %>%
   filter(vegetable == "tomatoes") %>%
   group_by(variety) %>%
@@ -129,38 +114,37 @@ tomatoes_2021 <- harvest_2021 %>%
             avg_month_harvest = sum(weight) / 12) %>%
   mutate(year = 2021)
 
-
+# Combined tomato harvests for both years
 combined_tomatoes <- bind_rows(tomatoes_2020, tomatoes_2021)
 
+# Tomato variety harvests
 reshaped_tomatoes <- combined_tomatoes %>%
   select(variety, year, annual_harvest) %>%
   pivot_wider(names_from = year, values_from = annual_harvest, names_prefix = "year_") 
 
+# Identify tomato varieties not planted in both years
 tomatoes_with_na <- reshaped_tomatoes %>%
   filter(is.na(year_2020) | is.na(year_2021)) %>%
   select(variety)
 
+# Identify tomato varieties planted in both years
 bothyears_tomatoes <- reshaped_tomatoes %>%
-  drop_na(year_2020, year_2021)
-
-
-bothyears_tomatoes <- bothyears_tomatoes %>%
+  drop_na(year_2020, year_2021) %>%
   mutate(
     percent_diff = (year_2021 - year_2020) / year_2020 * 100
   )
 
+# Prepare for visualization
 tomatoes_for_plot <- bothyears_tomatoes %>%
   gather(key = "year", value = "weight", year_2020, year_2021) %>%
   mutate(year = ifelse(year == "year_2020", 2020, 2021)) %>%
   mutate(weight = weight / 1000) %>%
   #select(-percent_diff) %>%
   arrange(desc(percent_diff))
-
-
-
 tomatoes_for_plot$variety <- factor(tomatoes_for_plot$variety, levels = unique(tomatoes_for_plot$variety))
 
-p = ggplot(tomatoes_for_plot, aes(x = weight, y = variety)) +
+# Plot tomato harvest trends
+ plt= ggplot(tomatoes_for_plot, aes(x = weight, y = variety)) +
   geom_line(aes(group = variety), size = 3.5, color = "#E7E7E7") +
   geom_point(data = tomatoes_for_plot %>% filter(year == 2020), color = "#F99B7D", size = 6) +
   geom_point(data = tomatoes_for_plot %>% filter(year == 2021), color = "#E76161", size = 6) +
@@ -197,7 +181,7 @@ p = ggplot(tomatoes_for_plot, aes(x = weight, y = variety)) +
   ) +
   theme(axis.text.y = element_text(face = "plain", size = 14, hjust = 0))
 
-p
+plt
 
 setwd("~/++documents/TidyTuesday/2024/Week 22")
 ggsave("Week22.png", width = 8.5, height = 7, dpi = 600)
