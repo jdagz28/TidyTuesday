@@ -1,22 +1,3 @@
-setwd("~/Jdagz Documents/TidyTuesday/Week 26")
-
-# Get the Data
-
-# Read in with tidytuesdayR package 
-# Install from CRAN via: install.packages("tidytuesdayR")
-# This loads the readme and all the datasets for the week of interest
-
-# Either ISO-8601 date or year/week works!
-
-tuesdata <- tidytuesdayR::tt_load('2022-06-28')
-# tuesdata <- tidytuesdayR::tt_load(2022, week = 26)
-
-paygap <- tuesdata$paygap
-
-# Or read in the data manually
-
-# paygap <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-06-28/paygap.csv')
-
 # Libraries
 library(tidyverse)
 library(vroom)
@@ -25,12 +6,18 @@ library(openxlsx)
 library(dplyr)
 library(ggbeeswarm)
 library(sysfonts)
+library(skimr)
 
-# Font
-font_add_google("Roboto", "roboto")
-font_add_google("Roboto Condensed", "roboto condensed")
-font_add_google("Oswald", "oswald")
+# Load Data
+tuesdata <- tidytuesdayR::tt_load('2022-06-28')
+# tuesdata <- tidytuesdayR::tt_load(2022, week = 26)
+paygap <- tuesdata$paygap
 
+# paygap <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-06-28/paygap.csv')
+
+# Data Check
+glimpse(paygap)
+skim(paygap)
 
 # SIC code - Industry categories (https://resources.companieshouse.gov.uk/sic/)
 SICcodes <- read.xlsx("SICCodes.xlsx")
@@ -38,27 +25,28 @@ SICcodes <- read.xlsx("SICCodes.xlsx")
 # Separate and create multiple entries with companies registered in multiple industries
 paygap <- separate_rows(paygap,sic_codes,sep=":")
 
-# calculate year
+# Get Year
 paygap$year <- lubridate::year(as.Date(paygap$due_date))
 
-# Add SIC code section and Industry
+# Filter data for the year 2021 and merge with SIC code categories
 dataset <- paygap %>%
     filter(year == 2021) %>%
-    
     left_join(SICcodes, select(Section, Industry), by = "sic_codes")
 
+# Check and drop for NA's
 sum(is.na(dataset$Section))    
 
 dataset <- dataset %>%
     drop_na(Section)
 
-sum(is.na(dataset$Section))
-
 # Plotting 
-
 plt <- dataset %>%
     ggplot(aes(x = Section,y = diff_median_hourly_percent, xaxt = "n")) +
+    
+    # Reference Line
     geom_hline(yintercept = 0, col = "grey34", lty = "dashed") + 
+  
+    # Beeswarm plot
     ggbeeswarm::geom_beeswarm(
         aes(fill = case_when(
             diff_median_hourly_percent > 0 ~ "Men",
@@ -93,8 +81,6 @@ plt <- dataset %>%
          fill = NULL)         
 
 # Export Plot
-
 ggsave("plt.jpeg", plt, device = "jpeg", height = 3000, width = 6000, units = "px")
-
 
 
