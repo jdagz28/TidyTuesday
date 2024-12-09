@@ -2,30 +2,23 @@
 library(tidytuesdayR)
 library(tidyverse)
 library(ggplot2)
-library(dplyr)
 library(skimr)
-library(extrafont)
 library(ggtext)
 library(ggrepel)
 
 # Load Data
 tuesdata <- tidytuesdayR::tt_load(2024, week = 29)
 
+# Set Working Directory
 setwd("~/++documents/TidyTuesday/2024/Week 29")
-#loadfonts(device = "win")
 
 # Data Exploration
-colnames(tuesdata$ewf_appearances)
 glimpse(tuesdata$ewf_appearances)
 skim(tuesdata$ewf_appearances)
 
-
-colnames(tuesdata$ewf_matches)
 glimpse(tuesdata$ewf_matches)
 skim(tuesdata$ewf_matches)
 
-
-colnames(tuesdata$ewf_standings)
 glimpse(tuesdata$ewf_standings)
 skim(tuesdata$ewf_standings)
 
@@ -34,8 +27,10 @@ dataset <- tuesdata$ewf_standings %>%
   filter (tier %in% "1") %>%
   select(season, team_name, goals_for, position) %>%
   mutate(
+    # Check and standardize team name (Chelsea Ladies, Chelsea Women)
     team_name = gsub(" Ladies$", "", team_name), 
     team_name = gsub(" Women$", "", team_name),
+    # Format same year season (2011-2011 to 2011)
     season = ifelse(
       str_extract(season, "^\\d{4}") == str_extract(season, "\\d{4}$"),
       str_extract(season, "^\\d{4}"),  
@@ -54,15 +49,26 @@ dataset <- tuesdata$ewf_standings %>%
   ) %>%
   ungroup()
 
+# Focus line graph on top 3 teams
 top3 <- dataset %>%
   filter(team_name %in% c("Chelsea", "Manchester City", "Arsenal"))
 
+# Grey out lines for non top 3 team
 rest <- dataset %>%
   filter(!team_name %in% c("Chelsea", "Manchester City", "Arsenal"))
 
+# Most recent season total_goals point
 top3_latest <- top3 %>%
   filter(season %in% "2023-2024")
 
+# Set team colors for top 3 teams
+top3_colors <- c(
+  "Chelsea" = "#034694",
+  "Manchester City" = "#6CABDD",
+  "Arsenal" = "#EF0107"
+)
+
+# Season winners
 top1_season <- dataset %>%
   filter(position %in% "1") %>% 
   mutate(team_name = ifelse(team_name %in% names(top3_colors), team_name, NA))
@@ -78,13 +84,7 @@ rect_data <- top1_season %>%
     end = as.numeric(as.factor(season)) + 0.5
   )
 
-top3_colors <- c(
-  "Chelsea" = "#034694",
-  "Manchester City" = "#6CABDD",
-  "Arsenal" = "#EF0107"
-)
-
-
+# Set theme settings
 theme_set(theme_minimal(base_family = "sans", base_size = 22))
 theme_update(
   axis.title = element_blank(),

@@ -3,27 +3,28 @@ library(tidytuesdayR)
 library(tidyverse)
 library(skimr)
 library(wordcloud)
-library(extrafont)
+library(extafont)
 
 # Load Data
 tuesdata <- tidytuesdayR::tt_load(2024, week = 28)
 
-colnames(tuesdata$drob_funs)
 glimpse(tuesdata$drob_funs)
 skim(tuesdata$drob_funs)
 
+# Summarize function usage by package and function name
 wordcloud_data <- tuesdata$drob_funs %>%
   group_by(pkgs, funs) %>%
   summarise(times_used = n(), .groups = "drop") %>%
   ungroup()
 
 
-setwd("~/++documents/TidyTuesday/2024/Week 28")
-loadfonts(device = "win")
+# Load Fonts in Windows
+# loadfonts(device = "win")
 
 png("Week28.png", width = 7, height = 7, units = "in", res = 600)
 par(mar = c(1,2,4,2))  
 
+# Create Wordcloud
 wordcloud(
   words = wordcloud_data$funs,
   freq = wordcloud_data$times_used,
@@ -32,10 +33,11 @@ wordcloud(
   random.order = FALSE,
   rot.per = 0.2,
   family = "Roboto",
-  font = 1,
+  font = 2,
   min.freq = 2
 )
 
+# Add title and caption
 title(
   main = "Top R Functions Used by David Robinson",
   line = 2.7,
@@ -43,7 +45,6 @@ title(
   font.main = 2,
   family = "Roboto"
 )
-
 
 mtext(
   "A word cloud visualizing the frequency of R functions used by \nDavid Robinson while exploring #TidyTuesday datasets.",
