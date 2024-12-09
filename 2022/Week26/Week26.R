@@ -31,17 +31,18 @@ paygap$year <- lubridate::year(as.Date(paygap$due_date))
 # Filter data for the year 2021 and merge with SIC code categories
 dataset <- paygap %>%
     filter(year == 2021) %>%
-    left_join(SICcodes, select(Section, Industry), by = "sic_codes")
+    mutate(sic_codes = as.double(sic_codes)) %>%
+    left_join(SICcodes, select(section, category), by = "sic_codes")
 
 # Check and drop for NA's
-sum(is.na(dataset$Section))    
+sum(is.na(dataset$section))    
 
 dataset <- dataset %>%
-    drop_na(Section)
+    drop_na(section)
 
 # Plotting 
 plt <- dataset %>%
-    ggplot(aes(x = Section,y = diff_median_hourly_percent, xaxt = "n")) +
+    ggplot(aes(x = section,y = diff_median_hourly_percent, xaxt = "n")) +
     
     # Reference Line
     geom_hline(yintercept = 0, col = "grey34", lty = "dashed") + 
@@ -56,21 +57,21 @@ plt <- dataset %>%
         cex = 3, size = 3, shape = 21, color = "white", priority = "random") + 
     scale_fill_manual(values = c("Men" = "#19a0aa", "Equal" = "#e0b23d", "Women" = "#f15f36")) +
     coord_flip(ylim = c(-20, 75)) +
-    facet_wrap(~ Industry) +
+    facet_wrap(~ category) +
     guides(fill = guide_legend(nrow=1, reverse=FALSE,label.position = "left", override.aes = list(size = 7))) +
     theme(
         plot.title.position = "plot",
         panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
         axis.text.y = element_blank(),
-        axis.text.x = element_text(family = "roboto"),
+        axis.text.x = element_text(family = "Roboto"),
         panel.background = element_blank(),
         strip.background = element_rect(colour="white", fill="white"),
-        strip.text = element_text(family = "roboto", size=rel(1.2), angle = 0, hjust = 0),
-        plot.title=element_text(family="oswald", face="bold", size=rel(3)),
-        plot.subtitle = element_text(family="oswald", size=rel(1.5)),
-        plot.caption=element_text(family="roboto condensed", size=rel(0.9)),
-        legend.text = element_text(size= rel(1)),
+        strip.text = element_text(family = "Roboto", size=rel(1), angle = 0, hjust = 0),
+        plot.title=element_text(family="Oswald", face="bold", size=rel(3)),
+        plot.subtitle = element_text(family="Oswald", size=rel(1.5)),
+        plot.caption=element_text(family="Roboto Condensed", size=rel(1)),
+        legend.text = element_text(size= rel(1.2)),
         legend.position="bottom",
         legend.key=element_blank()) + 
     labs(title="UK Gender Pay Gap",
@@ -79,6 +80,7 @@ plt <- dataset %>%
          x = NULL,
          y = "Difference between median male and female hourly pay (%)",
          fill = NULL)         
+plt
 
 # Export Plot
 ggsave("plt.jpeg", plt, device = "jpeg", height = 3000, width = 6000, units = "px")
